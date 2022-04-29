@@ -4,7 +4,7 @@ Radical Stability Score
 This is a script to calculate Radical Stability Score for Quantum Chemistry output files. This is implemented using cclib, an hence output file supoorted by cllib can be used to calculate Radical Stability Score.
 
 ### Using the script through command lines in terminals
-An Example of how to run it is shown below are:  
+An example of how to run it is shown below are:  
     ```
     python -m RSS --files *.log --output test --type 'mulliken'
     ```
@@ -14,6 +14,12 @@ dbstep
 cclib
 pandas
 numpy
+```
+
+### Installing the package
+```
+git clone https://github.com/patonlab/RSS.git
+python setup.py install
 ```
 
 ## License
