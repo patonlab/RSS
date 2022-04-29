@@ -1,0 +1,11 @@
+README.md
+setup.cfg
+setup.py
+rss/__init__.py
+rss/__main__.py
+rss/rss.py
+rss.egg-info/PKG-INFO
+rss.egg-info/SOURCES.txt
+rss.egg-info/dependency_links.txt
+rss.egg-info/requires.txt
+rss.egg-info/top_level.txt

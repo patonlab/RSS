@@ -1,0 +1,24 @@
+Metadata-Version: 2.1
+Name: rss
+Version: 1.0.0
+Summary: Radical Stability Score
+Home-page: https://github.com/patonlab/RSS
+Author: Shree Sowndarya SV, Peter St. John, Robert Paton
+Author-email: patonlab@colostate.edu
+License: MIT
+Description: # RSS
+        Radical Stability Score
+        
+        This is a script to calculate Radical Stability Score for Quantum Chemistry output files. This is implemented using cclib, an hence output file supoorted by cllib can be used to calculate Radical Stability Score.
+        
+        ### Using the script through command lines in terminals
+        An Example of how to run it is shown below are:  
+            ```
+            python -m RSS --files *.log --output test --type 'mulliken'
+            ```
+        
+Keywords: compchem,Radical Stability,informatics
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: MIT License
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
