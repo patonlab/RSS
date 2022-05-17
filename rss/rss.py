@@ -144,7 +144,49 @@ periodictable = [
 ]
 
 
-def output_to_spin_bv(files, name_csv, type):
+def get_turbomol_data(log, type):
+
+    outfile = open(log, "r")
+    outlines = outfile.readlines()
+
+    for i, line in enumerate(outlines):
+        if outlines[i].find(" total:") > -1:
+            natoms = outlines[i].split()[1]
+            print(natoms)
+            break
+    start_line, end_line = None, None
+    for i, line in enumerate(outlines):
+
+        # if (
+        #     outlines[i].find(
+        #         "atom      total     n(s)      n(p)      n(d)      n(f)      n(g)"
+        #     )
+        #     > -1
+        #     and type == "mulliken"
+        # ):
+        #     start_line = i + 1
+        #     end_line = i  + int(natoms)
+        #     break
+        if (
+            outlines[i].find(
+                "atom          sum       n(s)      n(p)      n(d)      n(f)      n(g)"
+            )
+            > -1
+            and type == "nbo"
+        ):
+            start_line = i + 1
+            end_line = i + 1 + int(natoms)
+            break
+
+    atoms, spins = [], []
+    for i in range(start_line, end_line):
+        print(outlines[i].split())
+        atoms.append(outlines[i].split()[1])
+        spins.append(outlines[i].split()[2])
+    return atoms, spins
+
+
+def output_to_spin_bv(files, name_csv, type, program):
     all_data = pd.DataFrame()
     counter = 0
 
@@ -152,20 +194,26 @@ def output_to_spin_bv(files, name_csv, type):
 
         name = log.split(".")[0]
 
-        data = cclib.io.ccread(log)
-        spins = data.atomspins[type]
-        atoms = data.atomnos
+        if program != "turbomol":
+            data = cclib.io.ccread(log)
+            spins = data.atomspins[type]
+            atoms = data.atomnos
+        else:
+            atoms, spins = get_turbomol_data(log, type)
 
         i = 1
         for spin, atom in zip(spins, atoms):
             all_data.at[counter, "file"] = log
             all_data.at[counter, "name"] = name
-            all_data.at[counter, "atom_sym"] = periodictable[atom]
+            if program != "turbomol":
+                all_data.at[counter, "atom_sym"] = periodictable[atom]
+            else:
+                all_data.at[counter, "atom_sym"] = atom.upper()
             all_data.at[counter, "atom_idx"] = i
 
-            all_data.at[counter, "spin_density"] = spin
+            all_data.at[counter, "spin_density"] = float(spin)
 
-            if periodictable[atom] != "H":
+            if all_data.at[counter, "atom_sym"] != "H":
                 sterics_scan = db.dbstep(log, atom1=i, volume=True)
                 all_data.at[counter, "buried_vol"] = float(sterics_scan.bur_vol)
             else:
@@ -195,6 +243,13 @@ def main():
         nargs="+",
     )
     parser.add_argument(
+        "-p",
+        "--program",
+        type=str,
+        help="Computational program name",
+        default="gaussian",
+    )
+    parser.add_argument(
         "-o",
         "--output",
         type=str,
@@ -206,11 +261,11 @@ def main():
         "--type",
         help="Type of spin to use (Default: Mulliken spin)",
         default="mulliken",
-        choices=["mulliken", "lowdin"],
+        choices=["mulliken", "lowdin", "nbo"],
     )
     args = parser.parse_args()
 
-    output_to_spin_bv(args.files, args.output, args.type)
+    output_to_spin_bv(args.files, args.output, args.type, args.program)
 
 
 if __name__ == "__main__":
