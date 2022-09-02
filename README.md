@@ -28,3 +28,4 @@ RSS is freely available under an [MIT](https://opensource.org/licenses/MIT) Lice
 
 ## Reference
 S. V., S. S.; Shree.; St. John, P. C.; Paton, R. S. A quantitative metric for organic radical stability and persistence using thermodynamic and kinetic features *Chem. Sci.*, **2021**,*12*, 13158-13166
+* Logo created by Guilian Luchini!
